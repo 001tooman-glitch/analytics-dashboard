@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аналитическая панель</title>
 
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:20px;
+    background:#f4f6f9;
+}
+
+h1{
+    color:#333;
+}
+
+.kpi-container{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.kpi-card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    width:220px;
+}
+
+.kpi-value{
+    font-size:30px;
+    font-weight:bold;
+    color:#0d6efd;
+}
+
+.chart{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bar{
+    height:30px;
+    background:#0d6efd;
+    margin:10px 0;
+    color:white;
+    padding-left:10px;
+    line-height:30px;
+    border-radius:5px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#0d6efd;
+    color:white;
+}
+
+th, td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+</style>
+</head>
+<body>
+
+<h1>📊 Аналитическая панель</h1>
+
+<div class="kpi-container">
+    <div class="kpi-card">
+        <div>Выручка</div>
+        <div class="kpi-value">15 млн ₸</div>
+    </div>
+
+    <div class="kpi-card">
+        <div>Прибыль</div>
+        <div class="kpi-value">3.2 млн ₸</div>
+    </div>
+
+    <div class="kpi-card">
+        <div>Заказы</div>
+        <div class="kpi-value">485</div>
+    </div>
+</div>
+
+<div class="chart">
+    <h2>Продажи по месяцам</h2>
+
+    <div class="bar" style="width:40%">Январь</div>
+    <div class="bar" style="width:55%">Февраль</div>
+    <div class="bar" style="width:70%">Март</div>
+    <div class="bar" style="width:85%">Апрель</div>
+</div>
+
+<h2>Данные</h2>
+
+<table>
+<tr>
+    <th>Месяц</th>
+    <th>Продажи</th>
+</tr>
+<tr>
+    <td>Январь</td>
+    <td>1 200 000 ₸</td>
+</tr>
+<tr>
+    <td>Февраль</td>
+    <td>1 450 000 ₸</td>
+</tr>
+<tr>
+    <td>Март</td>
+    <td>1 700 000 ₸</td>
+</tr>
+<tr>
+    <td>Апрель</td>
+    <td>2 100 000 ₸</td>
+</tr>
+</table>
+
+</body>
+</html>

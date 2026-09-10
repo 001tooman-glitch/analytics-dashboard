@@ -9,14 +9,19 @@
 body{
     font-family: Arial, sans-serif;
     background:#f4f6f9;
-    padding:20px;
+    margin:0;
+    padding:30px;
+}
+
+h1{
+    margin-bottom:25px;
 }
 
 .card{
     background:white;
-    border-radius:10px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
     padding:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
     margin-bottom:20px;
 }
 
@@ -29,23 +34,29 @@ body{
 .kpi{
     background:white;
     padding:20px;
-    border-radius:10px;
-    width:220px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    width:250px;
+}
+
+.kpi-title{
+    font-size:18px;
+    margin-bottom:10px;
 }
 
 .kpi-value{
-    font-size:32px;
-    color:#0d6efd;
+    font-size:36px;
     font-weight:bold;
+    color:#0d6efd;
 }
 
 .bar{
     background:#0d6efd;
     color:white;
     padding:8px;
-    margin:8px 0;
-    border-radius:5px;
+    margin:10px 0;
+    border-radius:6px;
+    white-space:nowrap;
 }
 
 table{
@@ -61,27 +72,34 @@ th{
 
 th,td{
     border:1px solid #ddd;
-    padding:10px;
+    padding:12px;
+    text-align:left;
+}
+
+tr:nth-child(even){
+    background:#f8f8f8;
 }
 </style>
+
 </head>
 <body>
 
 <h1>📊 Аналитическая панель</h1>
 
 <div class="card">
+    <h3>Загрузка CSV-файла</h3>
     <input type="file" id="csvFile" accept=".csv">
 </div>
 
 <div class="kpi-container">
 
     <div class="kpi">
-        <div>Общий объем продаж</div>
+        <div class="kpi-title">Общий объем продаж</div>
         <div class="kpi-value" id="totalSales">0</div>
     </div>
 
     <div class="kpi">
-        <div>Количество записей</div>
+        <div class="kpi-title">Количество записей</div>
         <div class="kpi-value" id="records">0</div>
     </div>
 
@@ -94,103 +112,150 @@ th,td{
 
 <div class="card">
     <h2>Данные</h2>
-    <div id="tableContainer"></div>
+    <div id="tableContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th>Месяц</th>
+                    <th>Продажи</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
 
-document.getElementById('csvFile').addEventListener('change', function(e){
+document.getElementById('csvFile')
+.addEventListener('change', function(event){
 
-    const file = e.target.files[0];
+    const file = event.target.files[0];
 
-    if(!file) return;
+    if(!file){
+        return;
+    }
 
     const reader = new FileReader();
 
-    reader.onload = function(evt){
+    reader.onload = function(e){
 
-        const text = evt.target.result.trim();
+        const text = e.target.result
+            .replace(/\r/g,'')
+            .trim();
 
         const rows = text.split('\n');
 
-        let html = `
-        <table>
-        <tr>
-            <th>Месяц</th>
-            <th>Продажи</th>
-        </tr>
-        `;
+        let totalSales = 0;
+        let recordCount = 0;
+        let maxSales = 0;
 
-        let chartHtml = "";
+        const data = [];
 
-        let total = 0;
-        let maxValue = 0;
+        for(let i = 1; i < rows.length; i++){
 
-        const data=[];
+            const line = rows[i].trim();
 
-        for(let i=1;i<rows.length;i++){
-
-            const cols = rows[i].split(',');
-
-            if(cols.length<2) continue;
-
-            const month = cols[0].trim();
-            const sales = parseInt(cols[1]);
-
-            data.push({month,sales});
-
-            total += sales;
-
-            if(sales > maxValue){
-                maxValue = sales;
+            if(!line){
+                continue;
             }
 
-            html += `
-            <tr>
-                <td>${month}</td>
-                <td>${sales.toLocaleString()}</td>
-            </tr>
-            `;
+            const cols = line.split(';');
+
+            if(cols.length < 2){
+                continue;
+            }
+
+            const month = cols[0].trim();
+
+            const sales = Number(
+                cols[1].trim()
+            );
+
+            if(isNaN(sales)){
+                continue;
+            }
+
+            data.push({
+                month,
+                sales
+            });
+
+            totalSales += sales;
+            recordCount++;
+
+            if(sales > maxSales){
+                maxSales = sales;
+            }
         }
 
-        html += "</table>";
+        document.getElementById('totalSales')
+            .innerText =
+            totalSales.toLocaleString('ru-RU');
+
+        document.getElementById('records')
+            .innerText =
+            recordCount;
+
+        let chartHtml = '';
 
         data.forEach(item => {
 
-            const width =
-                (item.sales / maxValue) * 100;
+            const percent =
+                (item.sales / maxSales) * 100;
 
             chartHtml += `
-            <div class="bar"
-                 style="width:${width}%">
-                 ${item.month} :
-                 ${item.sales.toLocaleString()}
-            </div>`;
+                <div
+                    class="bar"
+                    style="width:${percent}%">
+                    ${item.month}
+                    :
+                    ${item.sales.toLocaleString('ru-RU')}
+                </div>
+            `;
         });
 
-        document.getElementById(
-            "tableContainer"
-        ).innerHTML = html;
+        document.getElementById('chart')
+            .innerHTML = chartHtml;
+
+        let tableHtml = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Месяц</th>
+                    <th>Продажи</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+
+        data.forEach(item => {
+
+            tableHtml += `
+            <tr>
+                <td>${item.month}</td>
+                <td>
+                    ${item.sales.toLocaleString('ru-RU')}
+                </td>
+            </tr>
+            `;
+        });
+
+        tableHtml += `
+            </tbody>
+        </table>
+        `;
 
         document.getElementById(
-            "chart"
-        ).innerHTML = chartHtml;
-
-        document.getElementById(
-            "totalSales"
-        ).innerText =
-            total.toLocaleString();
-
-        document.getElementById(
-            "records"
-        ).innerText =
-            data.length;
+            'tableContainer'
+        ).innerHTML = tableHtml;
     };
 
-    reader.readAsText(file);
+    reader.readAsText(file,'UTF-8');
 
 });
 
 </script>
+
 </body>
 </html>

@@ -1,127 +1,131 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Аналитическая панель</title>
+<title>Аналитическая панель</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax18.5/xlsx.full.min.jsscript>
-    <script src="https://cdn.jsdelivr.net/npm/chart   <style>
-        body{
-            font-family:Arial,sans-serif;
-            margin:0;
-            padding:30px;
-            background:#f4f6f9;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+https://cdn.jsdelivr.net/npm/chart.jsscript>
 
-        h1{
-            margin-bottom:25px;
-        }
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:30px;
+    background:#f4f6f9;
+}
 
-        .card{
-            background:white;
-            border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,.1);
-            padding:20px;
-            margin-bottom:20px;
-        }
+h1{
+    margin-bottom:25px;
+}
 
-        .kpi-container{
-            display:flex;
-            gap:20px;
-            flex-wrap:wrap;
-        }
+.card{
+    background:white;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    padding:20px;
+    margin-bottom:20px;
+}
 
-        .kpi{
-            width:230px;
-            background:white;
-            padding:20px;
-            border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,.1);
-        }
+.kpi-container{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
 
-        .kpi-title{
-            font-size:16px;
-        }
+.kpi{
+    width:230px;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
 
-        .kpi-value{
-            font-size:32px;
-            font-weight:bold;
-            color:#0d6efd;
-            margin-top:10px;
-        }
+.kpi-title{
+    font-size:16px;
+}
 
-        table{
-            width:100%;
-            border-collapse:collapse;
-        }
+.kpi-value{
+    font-size:32px;
+    font-weight:bold;
+    color:#0d6efd;
+    margin-top:10px;
+}
 
-        th{
-            background:#0d6efd;
-            color:white;
-        }
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-        th,td{
-            border:1px solid #ddd;
-            padding:10px;
-        }
+th{
+    background:#0d6efd;
+    color:white;
+}
 
-        tr:nth-child(even){
-            background:#f7f7f7;
-        }
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+}
 
-        #salesChart{
-            max-height:400px;
-        }
-    </style>
+tr:nth-child(even){
+    background:#f7f7f7;
+}
+
+#salesChart{
+    max-height:400px;
+}
+</style>
+
 </head>
-
 <body>
 
 <h1>📊 Аналитическая панель</h1>
 
 <div class="card">
-    <h3>Загрузка CSV или Excel</h3>
 
-    <input
-        type="file"
-        id="dataFile"
-        accept=".csv,.xlsx,.xls">
+<h3>Загрузка CSV или Excel</h3>
+
+<input
+type="file"
+id="dataFile"
+accept=".csv,.xlsx,.xls">
+
 </div>
 
 <div class="kpi-container">
 
-    <div class="kpi">
-        <div class="kpi-title">Общий объем продаж</div>
-        <div class="kpi-value" id="totalSales">0</div>
-    </div>
+<div class="kpi">
+<div class="kpi-title">Общий объем продаж</div>
+<div class="kpi-value" id="totalSales">0</div>
+</div>
 
-    <div class="kpi">
-        <div class="kpi-title">Количество записей</div>
-        <div class="kpi-value" id="records">0</div>
-    </div>
+<div class="kpi">
+<div class="kpi-title">Количество записей</div>
+<div class="kpi-value" id="records">0</div>
+</div>
 
-    <div class="kpi">
-        <div class="kpi-title">Средние продажи</div>
-        <div class="kpi-value" id="avgSales">0</div>
-    </div>
+<div class="kpi">
+<div class="kpi-title">Средние продажи</div>
+<div class="kpi-value" id="avgSales">0</div>
+</div>
 
 </div>
 
 <div class="card">
-    <h2>🏆 Лучший месяц</h2>
-    <div id="topMonth">Нет данных</div>
+<h2>🏆 Лучший месяц</h2>
+<div id="topMonth">Нет данных</div>
 </div>
 
 <div class="card">
-    <h2>📈 График продаж</h2>
-    <canvas id="salesChart"></canvas>
+<h2>📈 График продаж</h2>
+<canvas id="salesChart"></canvas>
 </div>
 
 <div class="card">
-    <h2>📋 Данные</h2>
-    <div id="tableContainer"></div>
+<h2>📋 Данные</h2>
+<div id="tableContainer"></div>
 </div>
 
 <script>
@@ -129,231 +133,244 @@
 let salesChart = null;
 
 document
-.getElementById('dataFile')
-.addEventListener('change', openFile);
+.getElementById("dataFile")
+.addEventListener("change", openFile);
 
 function openFile(event){
 
-    const file = event.target.files[0];
+const file = event.target.files[0];
 
-    if(!file) return;
+if(!file) return;
 
-    if(
-        file.name.toLowerCase().endsWith('.xlsx') ||
-        file.name.toLowerCase().endsWith('.xls')
-    ){
+const name = file.name.toLowerCase();
 
-        loadExcel(file);
+if(name.endsWith(".xlsx") || name.endsWith(".xls")){
 
-    }else{
+loadExcel(file);
 
-        loadCsv(file);
+}else{
 
-    }
+loadCsv(file);
+
+}
+
 }
 
 function loadCsv(file){
 
-    const reader = new FileReader();
+const reader = new FileReader();
 
-    reader.onload = function(e){
+reader.onload = function(e){
 
-        const text =
-            e.target.result
-            .replace(/\r/g,'');
+const text =
+e.target.result.replace(/\r/g,'');
 
-        const rows =
-            text.split('\n')
-            .filter(x=>x.trim())
-            .map(x=>x.split(';'));
+const rows =
+text
+.split('\n')
+.filter(x => x.trim())
+.map(x => x.split(';'));
 
-        processData(rows);
-    };
+processData(rows);
 
-    reader.readAsText(file,'UTF-8');
+};
+
+reader.readAsText(file,"UTF-8");
+
 }
 
 function loadExcel(file){
 
-    const reader = new FileReader();
+const reader = new FileReader();
 
-    reader.onload = function(e){
+reader.onload = function(e){
 
-        const workbook =
-            XLSX.read(
-                e.target.result,
-                {type:'array'}
-            );
+const workbook = XLSX.read(
+e.target.result,
+{type:"array"}
+);
 
-        const sheetName =
-            workbook.SheetNames[0];
+const sheet =
+workbook.Sheets[
+workbook.SheetNames[0]
+];
 
-        const sheet =
-            workbook.Sheets[sheetName];
+const rows =
+XLSX.utils.sheet_to_json(
+sheet,
+{header:1}
+);
 
-        const rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                {header:1}
-            );
+processData(rows);
 
-        processData(rows);
-    };
+};
 
-    reader.readAsArrayBuffer(file);
+reader.readAsArrayBuffer(file);
+
 }
 
 function processData(rows){
 
-    let data = [];
+let data = [];
 
-    let totalSales = 0;
+let total = 0;
 
-    let maxSales = 0;
+let maxSales = 0;
 
-    let bestMonth = '';
+let bestMonth = "";
 
-    for(let i=1;i<rows.length;i++){
+for(let i=1;i<rows.length;i++){
 
-        if(!rows[i] || rows[i].length < 2)
-            continue;
+if(!rows[i] || rows[i].length < 2)
+continue;
 
-        const month =
-            String(rows[i][0]).trim();
+const month =
+String(rows[i][0]).trim();
 
-        const sales =
-            Number(rows[i][1]);
+const sales =
+Number(rows[i][1]);
 
-        if(isNaN(sales))
-            continue;
+if(isNaN(sales))
+continue;
 
-        data.push({
-            month,
-            sales
-        });
+data.push({
+month,
+sales
+});
 
-        totalSales += sales;
+total += sales;
 
-        if(sales > maxSales){
+if(sales > maxSales){
 
-            maxSales = sales;
+maxSales = sales;
 
-            bestMonth =
-                month +
-                ' (' +
-                sales.toLocaleString('ru-RU') +
-                ')';
-        }
-    }
+bestMonth =
+month +
+" (" +
+sales.toLocaleString("ru-RU") +
+")";
 
-    const count = data.length;
-
-    const avg =
-        count > 0
-        ? Math.round(totalSales / count)
-        : 0;
-
-    document.getElementById('totalSales')
-        .innerText =
-        totalSales.toLocaleString('ru-RU');
-
-    document.getElementById('records')
-        .innerText =
-        count;
-
-    document.getElementById('avgSales')
-        .innerText =
-        avg.toLocaleString('ru-RU');
-
-    document.getElementById('topMonth')
-        .innerText =
-        bestMonth;
-
-    drawChart(data);
-
-    buildTable(data);
 }
 
-function drawChart(data){
+}
 
-    const ctx =
-        document.getElementById('salesChart');
+const count = data.length;
 
-    if(salesChart){
+const avg =
+count
+? Math.round(total / count)
+: 0;
 
-        salesChart.destroy();
+document.getElementById("totalSales")
+.innerText =
+total.toLocaleString("ru-RU");
 
-    }
+document.getElementById("records")
+.innerText =
+count;
 
-    salesChart =
-        new Chart(ctx,{
+document.getElementById("avgSales")
+.innerText =
+avg.toLocaleString("ru-RU");
 
-            type:'line',
+document.getElementById("topMonth")
+.innerText =
+bestMonth;
 
-            data:{
+buildTable(data);
 
-                labels:
-                    data.map(
-                        x=>x.month
-                    ),
+drawChart(data);
 
-                datasets:[{
-
-                    label:'Продажи',
-
-                    data:
-                        data.map(
-                            x=>x.sales
-                        ),
-
-                    borderColor:'#0d6efd',
-
-                    backgroundColor:
-                        'rgba(13,110,253,0.2)',
-
-                    fill:true,
-
-                    tension:0.3
-                }]
-            },
-
-            options:{
-
-                responsive:true
-            }
-        });
 }
 
 function buildTable(data){
 
-    let html = `
-    <table>
-        <thead>
-            <tr>
-                <th>Месяц</th>
-                <th>Продажи</th>
-            </tr>
-        </thead>
-        <tbody>
-    `;
+let html = `
+<table>
+<thead>
+<tr>
+<th>Месяц</th>
+<th>Продажи</th>
+</tr>
+</thead>
+<tbody>
+`;
 
-    data.forEach(item=>{
+data.forEach(item=>{
 
-        html += `
-        <tr>
-            <td>${item.month}</td>
-            <td>${item.sales.toLocaleString('ru-RU')}</td>
-        </tr>
-        `;
-    });
+html += `
+<tr>
+<td>${item.month}</td>
+<td>${item.sales.toLocaleString("ru-RU")}</td>
+</tr>
+`;
 
-    html += `
-        </tbody>
-    </table>
-    `;
+});
 
-    document.getElementById('tableContainer')
-        .innerHTML = html;
+html += `
+</tbody>
+</table>
+`;
+
+document.getElementById(
+"tableContainer"
+).innerHTML = html;
+
+}
+
+function drawChart(data){
+
+const ctx =
+document.getElementById(
+"salesChart"
+);
+
+if(salesChart){
+
+salesChart.destroy();
+
+}
+
+salesChart =
+new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:
+data.map(
+x => x.month
+),
+
+datasets:[{
+
+label:"Продажи",
+
+data:
+data.map(
+x => x.sales
+),
+
+borderColor:"#0d6efd",
+
+backgroundColor:
+"rgba(13,110,253,0.2)",
+
+fill:true,
+
+tension:0.3
+
+}]
+
+},
+
+options:{
+responsive:true
+}
+
+});
+
 }
 
 </script>
